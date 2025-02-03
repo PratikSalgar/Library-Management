@@ -128,7 +128,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         if(!loggedInUserId.equals(userId))
         {
-            throw new BadRequestException("You are not authorized to borrow books on behalf of another user.");
+            throw new BadRequestException("You are not authorized to return books on behalf of another user.");
         }
 
         logger.info("Attempting to return books: {} for User ID: {}", bookIds, userId);
@@ -144,7 +144,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         for (Long bookId : bookIds) {
             BorrowLog borrowLog = borrowLogRepository
-                    .findByBookIdInAndStatus(bookIds, BorrowLog.BorrowStatus.BORROWED) // Use the updated method
+                    .findByBookIdInAndStatus(bookIds, BorrowLog.BorrowStatus.BORROWED)
                     .stream()
                     .filter(log -> log.getUser().getId().equals(userId))
                     .findFirst()
