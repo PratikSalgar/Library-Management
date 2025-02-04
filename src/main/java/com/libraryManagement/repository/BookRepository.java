@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
     Page<Book> findByDeletedFalse(Pageable pageable);
+
+    boolean existsByIsbn(String isbn);
 }

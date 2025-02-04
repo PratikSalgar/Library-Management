@@ -13,6 +13,7 @@ import com.libraryManagement.service.BookService;
 import com.libraryManagement.service.BookSpecification;
 import com.libraryManagement.service.CustomUserDetail;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,6 +55,10 @@ public class BookServiceImpl implements BookService {
 
         User user = userRepository.findById(bookDto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + bookDto.getUserId()));
+
+        if (bookRepository.existsByIsbn(bookDto.getIsbn())) {
+            throw new DataIntegrityViolationException("A book with the same ISBN already exists.");
+        }
 
         Book book = new Book();
         book.setTitle(bookDto.getTitle());
