@@ -1,6 +1,7 @@
 package com.libraryManagement.service.Impl;
 
 import com.libraryManagement.Exception.ResourceNotFoundException;
+import com.libraryManagement.Exception.UserAlreadyExistsException;
 import com.libraryManagement.model.User;
 import com.libraryManagement.repository.UserRepository;
 import com.libraryManagement.service.UserService;
@@ -24,8 +25,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new UserAlreadyExistsException("Username already exists");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+
     }
 
     @Override
