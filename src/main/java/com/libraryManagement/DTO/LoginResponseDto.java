@@ -1,14 +1,9 @@
 package com.libraryManagement.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+public record LoginResponseDto (
+        String token,
+        Long userId,
+        String role
+){
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class LoginResponseDto {
-    private String token;
-    private Long userId;
-    private String role;
 }

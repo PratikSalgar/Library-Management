@@ -2,6 +2,7 @@ package com.libraryManagement.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,10 +22,12 @@ public class User {
     private Long id;
 
     @Column(unique = true)
-    @NotBlank(message = "Cannot be empty")
+    @NotNull(message = "Username cannot be null")
+    @NotEmpty(message = "Username cannot be empty")
     private String username;
 
-    @NotBlank(message = "Cannot be empty")
+    @NotNull(message = "Username cannot be null")
+    @NotEmpty(message = "Username cannot be empty")
     private String password;
 
     @Enumerated(EnumType.STRING)

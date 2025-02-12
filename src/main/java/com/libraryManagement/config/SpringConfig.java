@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,12 +24,12 @@ public class SpringConfig {
 
     private final CustomUserDetailService customUserDetailService;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-    private final JwtRequestFilter jwtRequestFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SpringConfig(CustomUserDetailService customUserDetailService, CustomAccessDeniedHandler accessDeniedHandler, JwtRequestFilter jwtRequestFilter) {
+    public SpringConfig(CustomUserDetailService customUserDetailService, CustomAccessDeniedHandler accessDeniedHandler, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.customUserDetailService = customUserDetailService;
         this.accessDeniedHandler = accessDeniedHandler;
-        this.jwtRequestFilter = jwtRequestFilter;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -38,7 +39,7 @@ public class SpringConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
+         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/auth/login/**").permitAll()
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
@@ -49,8 +50,9 @@ public class SpringConfig {
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults()).build();
+                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+         return http.build();
     }
 
     @Bean
