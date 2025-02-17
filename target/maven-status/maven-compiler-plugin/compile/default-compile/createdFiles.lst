@@ -13,7 +13,6 @@ com\libraryManagement\model\Book.class
 com\libraryManagement\repository\BorrowLogRepository.class
 com\libraryManagement\config\CustomAccessDeniedHandler.class
 com\libraryManagement\model\BorrowLog$BorrowStatus.class
-com\libraryManagement\config\SwaggerConfig.class
 com\libraryManagement\controller\UserController.class
 com\libraryManagement\controller\BookController.class
 com\libraryManagement\service\Impl\BookServiceImpl.class

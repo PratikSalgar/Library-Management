@@ -10,11 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/borrow")
+@RequestMapping("/api/books")
 public class BorrowController {
 
     private static final Logger logger = LoggerFactory.getLogger(BorrowController.class);
@@ -70,7 +71,7 @@ public class BorrowController {
             List<BookDto> books = borrowService.getMostBorrowedBookInLast30Days();
             if (books.isEmpty()) {
                 logger.info("No books borrowed in the last 30 days.");
-                return ResponseEntity.ok("No books borrowed in the last 30 days.");
+                return ResponseEntity.ok(new ArrayList<>()); // Return an empty list instead of a message.
             }
             logger.info("Most borrowed books: {}", books.stream().map(BookDto::getTitle).collect(Collectors.joining(", ")));
             return ResponseEntity.ok(books);
@@ -79,5 +80,6 @@ public class BorrowController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
+
 
 }

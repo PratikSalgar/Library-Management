@@ -15,6 +15,7 @@ import com.libraryManagement.service.CustomUserDetail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -66,7 +68,9 @@ public class BookServiceImpl implements BookService {
         book.setCategory(bookDto.getCategory());
         book.setAvailable(true);
         book.setDeleted(false);
+        book.setImageUrl(bookDto.getImageUrl());  // Set the image URL
         book.setUser(user);
+
         return bookRepository.save(book);
     }
 
@@ -78,9 +82,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findByDeletedFalse(Pageable pageable) {
-        return bookRepository.findByDeletedFalse(pageable);
+    public Page<BookDto> findByDeletedFalse(Pageable pageable) {
+        return bookRepository.findByDeletedFalse(pageable)
+                .map(book -> new BookDto(
+                        book.getId(),
+                        book.getTitle(),
+                        book.getAuthor(),
+                        book.getCategory(),
+                        book.getPublishedYear(),
+                        book.isAvailable(),
+                        "/api/books/images/" + book.getImageUrl() // Image URL formation
+                ));
     }
+
 
     @Override
     public List<Book> searchBooks(String keyword) {
@@ -91,6 +105,16 @@ public class BookServiceImpl implements BookService {
             throw new NoResultsFoundException("No books found for the keyword: "+keyword);
         }
         return books;
+    }
+
+    @Override
+    public List<Book> findByCategoryIgnoreCase(String category) {
+        List<Book> byCategory = bookRepository.findByCategoryIgnoreCase(category);
+        if(byCategory.isEmpty())
+        {
+            throw new NoResultsFoundException("No books found for the keyword: "+category);
+        }
+        return byCategory;
     }
 
     @Override

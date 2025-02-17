@@ -1,6 +1,7 @@
 package com.libraryManagement.repository;
 
 import com.libraryManagement.model.BorrowLog;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,5 +15,6 @@ public interface BorrowLogRepository extends JpaRepository<BorrowLog, Long> {
 
     @Query("SELECT b.book, COUNT(b.book) FROM BorrowLog b WHERE b.borrowedDate >= :startDate " +
             "GROUP BY b.book ORDER BY COUNT(b.book) DESC")
-    List<Object[]> findBorrowCountForBooks(LocalDateTime startDate);
+    List<Object[]> findBorrowCountForBooks(LocalDateTime startDate, Pageable pageable);
+
 }

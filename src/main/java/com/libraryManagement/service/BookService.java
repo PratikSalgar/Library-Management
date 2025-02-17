@@ -10,8 +10,9 @@ import java.util.List;
 public interface BookService {
     Book addBook(BookDto bookDto);
     Book getBookById(Long id);
-    Page<Book> findByDeletedFalse(Pageable pageable);
+    Page<BookDto> findByDeletedFalse(Pageable pageable);
     List<Book> searchBooks(String keyword);
+    List<Book> findByCategoryIgnoreCase(String category);
     Book updateBook(Long id, BookDto bookDto);
     void softDeleteBook(Long id);
 }

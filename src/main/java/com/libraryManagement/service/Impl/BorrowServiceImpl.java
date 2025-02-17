@@ -13,6 +13,8 @@ import com.libraryManagement.service.BorrowService;
 import com.libraryManagement.service.CustomUserDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -181,26 +183,27 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public List<BookDto> getMostBorrowedBookInLast30Days() {
-        logger.info("Fetching most borrowed books in the last 30 days");
+        logger.info("Fetching top 6 most borrowed books in the last 30 days");
 
         LocalDateTime startDate = LocalDateTime.now().minusDays(30);
 
-        List<Object[]> borrowCountList = borrowLogRepository.findBorrowCountForBooks(startDate);
+        Pageable topSix = PageRequest.of(0, 6); // Limit to 6 books
+        List<Object[]> borrowCountList = borrowLogRepository.findBorrowCountForBooks(startDate, topSix);
 
         if (borrowCountList.isEmpty()) {
             logger.error("No borrowing records found in the last 30 days");
             throw new ResourceNotFoundException("No borrowing records found in the last 30 days");
         }
-        long maxCount = (long) borrowCountList.get(0)[1];
 
         return borrowCountList.stream()
-                .filter(record -> (long) record[1] == maxCount)
                 .map(record -> {
                     Book book = (Book) record[0];
                     long borrowCount = (long) record[1];
-                    return new BookDto(book.getId(),book.getTitle(),book.getAuthor(),book.getPublishedYear(),borrowCount);
-                }).collect(Collectors.toList());
+                    return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getPublishedYear(), borrowCount, book.getImageUrl(),book.getCategory());
+                })
+                .collect(Collectors.toList());
     }
+
 
 
 }

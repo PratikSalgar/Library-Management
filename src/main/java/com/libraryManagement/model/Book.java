@@ -39,6 +39,9 @@ public class Book {
     @Column(nullable = false)
     private boolean deleted = false;
 
+    @Column(nullable = true)
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

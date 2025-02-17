@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -30,17 +32,33 @@ public class BookDto {
     @NotBlank(message = "Category cannot be empty")
     private String category;
 
+    private String imageUrl;
+
+
     private Long userId;
 
     private Long borrowCount;
 
+    public BookDto() {
+    }
 
-    public BookDto(Long id, String title, String author, int publishedYear, long borrowCount) {
+    public BookDto(Long id, String title, String author, int publishedYear, long borrowCount, String imageUrl,String category) {
 
         this.id = id;
         this.title=title;
         this.author=author;
         this.publishedYear=publishedYear;
         this.borrowCount=borrowCount;
+        this.category=category;
+        this.imageUrl = imageUrl;
+    }
+
+    public BookDto(Long id, String title, String author, String category, int publishedYear, boolean available, String imageUrl) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.category = category;
+        this.publishedYear = publishedYear;
+        this.imageUrl = imageUrl;
     }
 }
